@@ -1,9 +1,13 @@
 import * as THREE from 'three'
 import Experience from './Experience.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
-export default class Camera {
-    constructor() {
+import { TrackballControls  } from 'three/examples/jsm/controls/TrackballControls.js'
+
+
+export default class Camera
+{
+    constructor()
+    {
         this.experience = new Experience()
         this.sizes = this.experience.sizes
         this.scene = this.experience.scene
@@ -13,28 +17,43 @@ export default class Camera {
         this.setControls()
     }
 
-    setInstance() {
+    setInstance()
+    {
         this.instance = new THREE.PerspectiveCamera(35, this.sizes.width / this.sizes.height, 0.1, 1000)
         this.instance.position.set(6, 4, 8)
         this.scene.add(this.instance)
     }
 
-    setControls() {
+    setControls()
+    {
         // this.controls = new OrbitControls(this.instance, this.canvas)
         // this.controls.enableDamping = false
         // this.controls.enablePan = false
         // this.controls.enableZoom = false
-        this.controls = new TrackballControls(this.instance);
-        this.controls.target.set(0, 0, 0)
+        this.controls = new TrackballControls(this.instance, this.canvas)
+        this.controls.rotateSpeed = 1;
+        this.controls.zoomSpeed = 1.2;
+        this.controls.panSpeed = 0.8;
+        this.controls.noZoom = false;
+        this.controls.noPan = true;
+        this.controls.noRotate = false;
+        this.controls.staticMoving = true;
+        this.controls.dynamicDampingFactor = 0.3;
+        this.controls.keys = [ 65, 83, 68 ];
+        
+		
 
     }
 
-    resize() {
+    resize()
+    {
         this.instance.aspect = this.sizes.width / this.sizes.height
         this.instance.updateProjectionMatrix()
     }
 
-    update() {
+    update()
+    {
         this.controls.update()
+        this.controls.handleResize()
     }
 }

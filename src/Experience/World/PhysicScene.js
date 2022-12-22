@@ -9,6 +9,7 @@ import { Vec3 } from "cannon-es"
 import ThirdPersonCamera from '../Utils/ThirdPersonCamera.js'
 import { Body } from 'cannon-es'
 
+
 export default class PhysicScene {
     constructor() {
         this.experience = new Experience()
@@ -20,6 +21,7 @@ export default class PhysicScene {
         this.cannonDebugger = new CannonDebugger(this.scene, PhysicManager.world, {
             // options...
         })
+
 
         // Debug
         if (this.debug.active) {
@@ -48,7 +50,7 @@ export default class PhysicScene {
                 mass: 40,
                 fixedRotation: true,
                 linearDamping: 0.85,
-          
+
 
             },
             shapeTypes.BOX
@@ -63,7 +65,7 @@ export default class PhysicScene {
 
 
     }
-    
+
 
     setFloor() {
         const floorGeometry = new THREE.BoxGeometry(50, 0.05, 50)
@@ -111,33 +113,34 @@ export default class PhysicScene {
     }
 
     setbricks() {
-        let bricksCount = 40
+        let bricksCount = 30
         this.bricks = []
-        const bricksGeometry = new THREE.BoxGeometry(1, 0.4, 1)
+        const bricksGeometry = new THREE.BoxGeometry(1.5, 0.4, 1.5)
         const bricksMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 })
         for (let i = 0; i < bricksCount; i++) {
             this.bricks[i] = new THREE.Mesh(bricksGeometry, bricksMaterial)
             this.scene.add(this.bricks[i])
             this.bricks.push(this.bricks[i])
 
-            this.bricks[i].position.x = (i % 5) * 1.1 - 4
+            this.bricks[i].position.x = (i % 5) * 1.5 - 4
             this.bricks[i].position.y = Math.floor(i / 5) * 1.2 - 4.5
             this.bricks[i].position.z = -15
 
             this.bricks[i].body = PhysicManager.addBody(
                 this.bricks[i],
                 {
-                    mass: 1,
-                    fixedRotation: true,
+                    mass: 10,
+                    fixedRotation: false,
                     linearDamping: 0.85,
+                    
                     material: "default",// It defines the body interaction with other bodies.  Others(concate, plastic etc)
+                    type: Body.DYNAMIC,
 
                 },
                 shapeTypes.BOX
 
             )
         }
-     
 
     }
 
@@ -150,10 +153,10 @@ export default class PhysicScene {
         this.cube.position.copy(this.cubeBody.position)
         this.cube.quaternion.copy(this.cubeBody.quaternion)
         PhysicManager.update()
-      this.bricks.forEach(brick => {
+        this.bricks.forEach(brick => {
             brick.position.copy(brick.body.position)
             brick.quaternion.copy(brick.body.quaternion)
-      })
+        })
 
     }
 }

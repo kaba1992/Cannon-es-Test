@@ -1,6 +1,6 @@
 import { Clock } from 'three/src/Three';
 import { ShapeType, threeToCannon } from 'three-to-cannon';
-import { Body, Box, Sphere, Cylinder, Vec3, SAPBroadphase, World,Material,ContactMaterial } from 'cannon-es';
+import { Body, Box, Sphere, Cylinder, Vec3, SAPBroadphase, World, Material, ContactMaterial } from 'cannon-es';
 
 
 class PhysicManager {
@@ -16,9 +16,9 @@ class PhysicManager {
         this.defaultMaterial = new Material('default');
         this.groundMaterial = new Material('groundMaterial');
         this.slippery_ground = new Material('slipperyMaterial');
-       this.defaultContactMaterial = new ContactMaterial(this.groundMaterial, this.slippery_ground, {
-            friction: 0.005, // Friction with the ground
-            restitution: 0.3,
+        this.defaultContactMaterial = new ContactMaterial(this.groundMaterial, this.slippery_ground, {
+            friction: 0.0005, // Friction with the ground
+            restitution: 0.3, // Restitution (bounciness)
         });
         this.world.defaultContactMaterial = this.defaultContactMaterial;
 
