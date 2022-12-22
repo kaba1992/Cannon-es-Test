@@ -1,15 +1,26 @@
 import { Clock } from 'three/src/Three';
 import { ShapeType, threeToCannon } from 'three-to-cannon';
-import { Body, Box, Sphere, Cylinder, Vec3, SAPBroadphase, World } from 'cannon-es';
+import { Body, Box, Sphere, Cylinder, Vec3, SAPBroadphase, World,Material,ContactMaterial } from 'cannon-es';
 
 
 class PhysicManager {
     constructor() {
         this.world = new World()
-        this.world.gravity.set(0, 0, 0) //  -9.82 corresponds to Earth's gravity. y axes, if you want to set a gravity
+        this.world.gravity.set(0, -9.82, 0) //  -9.82 corresponds to Earth's gravity. y axes, if you want to set a gravity
         this.world.broadphase = new SAPBroadphase(this.world)
         this.world.solver.iterations = 5
         this.clock = new Clock()
+
+        //set World Material
+        // Default material
+        this.defaultMaterial = new Material('default');
+        this.groundMaterial = new Material('groundMaterial');
+        this.slippery_ground = new Material('slipperyMaterial');
+       this.defaultContactMaterial = new ContactMaterial(this.groundMaterial, this.slippery_ground, {
+            friction: 0.005, // Friction with the ground
+            restitution: 0.3,
+        });
+        this.world.defaultContactMaterial = this.defaultContactMaterial;
 
     }
 
