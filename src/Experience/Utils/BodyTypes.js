@@ -6,7 +6,7 @@ function pow2(x){
 
 const bodyTypes = {
     NONE : pow2(0), // Static body
-    SPHERE : pow2(1),
+    WALLS : pow2(1),
     CUBE :pow2(2),
     CYLINDER: pow2(3),
     OTHERS : pow2(20),

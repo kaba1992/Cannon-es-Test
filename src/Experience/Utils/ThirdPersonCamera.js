@@ -20,26 +20,20 @@ export default class ThirdPersonCamera {
             y: 10,
             z: -20,
         }
-        // convert target rotation from euler to quaternion
-        const targetRotation = new THREE.Quaternion();
-        const camRot = new THREE.Euler(0, this.target.rotation.z, 0);
-        targetRotation.setFromEuler(camRot);
-
+ 
         const idealOffset = new THREE.Vector3(params.x, params.y, params.z);
-        idealOffset.applyQuaternion(targetRotation);
+        idealOffset.applyQuaternion(this.target.quaternion);
 
         idealOffset.add(this.target.position);
 
         return idealOffset;
     }
     calculateIdealLookAt() {
-        // convert target rotation from euler to quaternion
-        const targetRotation = new THREE.Quaternion();
-        const camRot = new THREE.Euler(0, this.target.rotation.z, 0);
-        targetRotation.setFromEuler(camRot);
+
         const idealLookAt = new THREE.Vector3(0, 4, 0);
-        idealLookAt.applyQuaternion(targetRotation);
+        idealLookAt.applyQuaternion(this.target.quaternion);
         idealLookAt.add(this.target.position);
+       
         return idealLookAt;
     }
 
@@ -54,8 +48,8 @@ export default class ThirdPersonCamera {
         // fill these in
         this.currentPosition.lerp(idealOffset, lerpPow);
         this.currentLookAt.lerp(idealLookAt, lerpPow);
-        // this.camera.position.copy(this.currentPosition);
-        // this.camera.lookAt(this.currentLookAt);
+        this.camera.position.copy(this.currentPosition);
+        this.camera.lookAt(this.currentLookAt);
         console.log("test");
     }
 }

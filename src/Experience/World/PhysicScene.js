@@ -18,6 +18,8 @@ export default class PhysicScene {
         this.clock = new THREE.Clock()
         this.debug = this.experience.debug
         this.camera = this.experience.camera.instance
+        this.rotVelocity = 100
+        this.rotation = null
         this.cannonDebugger = new CannonDebugger(this.scene, PhysicManager.world, {
             // options...
         })
@@ -50,7 +52,8 @@ export default class PhysicScene {
                 mass: 40,
                 fixedRotation: true,
                 linearDamping: 0.85,
-
+                collisionFilterGroup: bodyTypes.CUBE,
+                collisionFilterMask: bodyTypes.NONE | bodyTypes.WALLS | bodyTypes.OTHERS,
 
             },
             shapeTypes.BOX
@@ -59,7 +62,7 @@ export default class PhysicScene {
         this.ThirdPersonCamera = new ThirdPersonCamera(
             {
                 camera: this.camera,
-                target: this.cube,
+                target: this.cubeBody,
             }
         )
 
@@ -79,11 +82,16 @@ export default class PhysicScene {
                 type: Body.STATIC, //does not move during simulation and behaves as if it has infinite mass.
                 // collisionFilterGroup: bodyTypes.STATIC,
                 mass: 0,
+                collisionFilterGroup: bodyTypes.STATIC,
+                // collisionFilterMask: bodyTypes.CUBE | bodyTypes.WALLS ,
                 material: "default",// It defines the body interaction with other bodies.  Others(concate, plastic etc)
             },
             shapeTypes.BOX
         )
 
+    }
+    updateRotation() {
+        this.cubeBody.quaternion.setFromEuler(0, this.rotation, 0, 'XYZ')
     }
 
     setCubeControls() {
@@ -93,22 +101,25 @@ export default class PhysicScene {
 
 
         if (this.keyboard.pressed("left") || this.keyboard.pressed("q")) {
-            this.cubeBody.applyImpulse(new Vec3(-distance, 0, 0), new Vec3(0, 0, 0))
+            // this.cubeBody.applyImpulse(new Vec3(-distance, 0, 0), new Vec3(0, 0, 0))
+            this.rotation += this.rotVelocity * delta
 
         }
 
         if (this.keyboard.pressed("right") || this.keyboard.pressed("d")) {
-            this.cubeBody.applyImpulse(new Vec3(distance, 0, 0), new Vec3(0, 0, 0))
+            // this.cubeBody.applyImpulse(new Vec3(distance, 0, 0), new Vec3(0, 0, 0))
             // this.cubeBody.position.x += 0.1
+            this.rotation -= this.rotVelocity * delta
         }
 
         if (this.keyboard.pressed("up") || this.keyboard.pressed("z")) {
-            this.cubeBody.applyImpulse(new Vec3(0, 0, -distance), new Vec3(0, 0, 0))
+            this.cubeBody.applyImpulse(new Vec3(0, 0, distance), new Vec3(0, 0, 0))
         }
 
         if (this.keyboard.pressed("down") || this.keyboard.pressed("s")) {
-            this.cubeBody.applyImpulse(new Vec3(0, 0, distance), new Vec3(0, 0, 0))
+            this.cubeBody.applyImpulse(new Vec3(0, 0, -distance), new Vec3(0, 0, 0))
         }
+        
 
     }
 
@@ -124,7 +135,7 @@ export default class PhysicScene {
 
             this.bricks[i].position.x = (i % 5) * 1.5 - 4
             this.bricks[i].position.y = Math.floor(i / 5) * 1.2 - 4.5
-            this.bricks[i].position.z = -15
+            this.bricks[i].position.z = 15
 
             this.bricks[i].body = PhysicManager.addBody(
                 this.bricks[i],
@@ -132,7 +143,8 @@ export default class PhysicScene {
                     mass: 10,
                     fixedRotation: false,
                     linearDamping: 0.85,
-                    
+                    collisionFilterGroup: bodyTypes.WALLS,
+                    collisionFilterMask: bodyTypes.CUBE | bodyTypes.NONE | bodyTypes.WALLS,
                     material: "default",// It defines the body interaction with other bodies.  Others(concate, plastic etc)
                     type: Body.DYNAMIC,
 
@@ -157,6 +169,7 @@ export default class PhysicScene {
             brick.position.copy(brick.body.position)
             brick.quaternion.copy(brick.body.quaternion)
         })
+        this.updateRotation()
 
     }
 }

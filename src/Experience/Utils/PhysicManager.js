@@ -19,6 +19,11 @@ class PhysicManager {
         this.defaultContactMaterial = new ContactMaterial(this.groundMaterial, this.slippery_ground, {
             friction: 0.0005, // Friction with the ground
             restitution: 0.3, // Restitution (bounciness)
+            // contactEquationStiffness: 1e8,
+            // contactEquationRelaxation: 3,
+            // frictionEquationStiffness: 1e8,
+            // frictionEquationRegularizationTime: 3,
+
         });
         this.world.defaultContactMaterial = this.defaultContactMaterial;
 
